@@ -12,7 +12,10 @@ const mongoDb = process.env.MONGO_DB;
 mongoose.connect(mongoDb);
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "mongo connection error"));
-console.log(mongoDb);
+db.once("open", () => {
+    console.log("Connected to MongoDB");
+    // console.log(db.collections);
+});
 
 const User = mongoose.model(
     "User",
@@ -64,42 +67,49 @@ app.use(passport.session());
 app.use(express.urlencoded({ extended: false }));
 
 app.get("/", (req, res) => {
-    res.render("index", { user: req.user });
-});
-app.get("/sign-up", (req, res) => res.render("sign-up-form"));
-
-app.get("/log-out", (req, res, next) => {
-    req.logout((err) => {
-        if (err) {
-            return next(err);
-        }
-        res.redirect("/");
-    });
+    return res.send("Received a GET HTTP method");
+    // res.render("index", { user: req.user });
 });
 
-app.post("/sign-up", async (req, res, next) => {
-    try {
-        bcryptjs.hash(req.body.password, 10, async (err, hashedPassword) => {
-            // if err, do something
-            // otherwise, store hashedPassword in DB
-            const user = new User({
-                username: req.body.username,
-                password: hashedPassword,
-            });
-            const result = await user.save();
-        });
-        res.redirect("/");
-    } catch (err) {
-        return next(err);
-    }
-});
+//ROUTES
+const authRouter = require("./routes/auth");
 
-app.post(
-    "/log-in",
-    passport.authenticate("local", {
-        successRedirect: "/",
-        failureRedirect: "/",
-    })
-);
+app.use("/", authRouter);
+
+// app.get("/sign-up", (req, res) => res.render("sign-up-form"));
+
+// app.get("/log-out", (req, res, next) => {
+//     req.logout((err) => {
+//         if (err) {
+//             return next(err);
+//         }
+//         res.redirect("/");
+//     });
+// });
+
+// app.post("/sign-up", async (req, res, next) => {
+//     try {
+//         bcryptjs.hash(req.body.password, 10, async (err, hashedPassword) => {
+//             // if err, do something
+//             // otherwise, store hashedPassword in DB
+//             const user = new User({
+//                 username: req.body.username,
+//                 password: hashedPassword,
+//             });
+//             const result = await user.save();
+//         });
+//         res.redirect("/");
+//     } catch (err) {
+//         return next(err);
+//     }
+// });
+
+// app.post(
+//     "/log-in",
+//     passport.authenticate("local", {
+//         successRedirect: "/",
+//         failureRedirect: "/",
+//     })
+// );
 
 app.listen(3000, () => console.log("app listening on port 3000!"));
