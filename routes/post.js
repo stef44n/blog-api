@@ -9,7 +9,7 @@ router.get("/posts", (req, res) => {
 
 // Description: Retrieves a specific post by its ID.
 router.get("/posts/:postId", (req, res) => {
-    return res.send("Received a GET HTTP method /posts/:postId ");
+    return res.send(`Received a GET HTTP method /posts/${req.params.postId}`);
 });
 
 // Description: Creates a new post.
@@ -19,12 +19,14 @@ router.post("/posts", (req, res) => {
 
 // Description: Updates an existing post by its ID.
 router.put("/posts/:postId", (req, res) => {
-    return res.send("Received a PUT HTTP method /posts/:postId ");
+    return res.send(`Received a PUT HTTP method /posts/${req.params.postId} `);
 });
 
 // Description: Deletes a post by its ID.
 router.delete("/posts/:postId", (req, res) => {
-    return res.send("Received a DELETE HTTP method /posts/:postId ");
+    return res.send(
+        `Received a DELETE HTTP method /posts/${req.params.postId} `
+    );
 });
 
 // Export router
