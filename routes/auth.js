@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const passport = require("passport");
+
+const signUpController = require("../controllers/signUpController");
+const logInController = require("../controllers/logInController");
+const logOutController = require("../controllers/logOutController");
 
 // Routes
 router.get("/sign-up", (req, res) => {
@@ -9,43 +12,11 @@ router.get("/sign-up", (req, res) => {
     // res.render("sign-up-form");
 });
 
-router.post(
-    "/log-in",
-    passport.authenticate("local", {
-        successRedirect: "/",
-        failureRedirect: "/",
-    })
-);
+router.post("/sign-up", signUpController);
 
-router.get("/log-out", (req, res, next) => {
-    return res.send("Received a GET HTTP method /log-out ");
+router.post("/log-in", logInController);
 
-    // req.logout((err) => {
-    //     if (err) {
-    //         return next(err);
-    //     }
-    //     res.redirect("/");
-    // });
-});
-
-router.post("/sign-up", async (req, res, next) => {
-    return res.send("Received a POST HTTP method /sign-up ");
-
-    // try {
-    //     bcryptjs.hash(req.body.password, 10, async (err, hashedPassword) => {
-    //         // if err, do something
-    //         // otherwise, store hashedPassword in DB
-    //         const user = new User({
-    //             username: req.body.username,
-    //             password: hashedPassword,
-    //         });
-    //         const result = await user.save();
-    //     });
-    //     res.redirect("/");
-    // } catch (err) {
-    //     return next(err);
-    // }
-});
+router.get("/log-out", logOutController);
 
 // Export router
 module.exports = router;
